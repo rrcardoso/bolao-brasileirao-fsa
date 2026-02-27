@@ -27,7 +27,8 @@ frontend_dist/
 dist/
 
 
-# Project context (local only)
+# Project context (local only, contains credentials)
+CONTEXTO.md
 CONTEXTO_DEPLOY.md
 render-env.txt
 
