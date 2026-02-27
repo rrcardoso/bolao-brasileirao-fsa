@@ -13,6 +13,9 @@ export default function Apostadores() {
   const [editing, setEditing] = useState<ApostadorOut | null>(null);
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
+  const [showFullName, setShowFullName] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<{ id: number; nome: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -67,14 +70,22 @@ export default function Apostadores() {
     }
   }
 
-  async function handleDelete(id: number, nome: string) {
-    if (!confirm(`Remover ${nome}?`)) return;
+  function handleDelete(id: number, nome: string) {
+    setConfirmDelete({ id, nome });
+  }
+
+  async function executeDelete() {
+    if (!confirmDelete) return;
+    setDeleting(true);
     try {
-      await api.deleteApostador(id);
-      if (editing?.id === id) setEditing(null);
+      await api.deleteApostador(confirmDelete.id);
+      if (editing?.id === confirmDelete.id) setEditing(null);
       load();
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : "Erro ao remover.");
+    } finally {
+      setDeleting(false);
+      setConfirmDelete(null);
     }
   }
 
@@ -94,7 +105,7 @@ export default function Apostadores() {
         </div>
       )}
 
-      <div className={authenticated ? "lg:col-span-2" : "max-w-3xl mx-auto"}>
+      <div className={authenticated ? "lg:col-span-2" : ""}>
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Apostadores</h2>
@@ -103,6 +114,16 @@ export default function Apostadores() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowFullName((v) => !v)}
+              className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
+              title={showFullName ? "Mostrar siglas" : "Mostrar nomes completos"}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+              </svg>
+              <span className="hidden sm:inline">{showFullName ? "Siglas" : "Nomes"}</span>
+            </button>
             {!authenticated && (
               <span className="hidden sm:flex items-center gap-1 text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-md">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -161,68 +182,80 @@ export default function Apostadores() {
             Nenhum apostador cadastrado.
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {sorted.map((ap) => (
               <div
                 key={ap.id}
-                className={`bg-white rounded-xl border shadow-sm p-3 sm:p-4 transition-colors ${
+                className={`bg-white rounded-xl border shadow-sm flex flex-col transition-colors overflow-visible ${
                   editing?.id === ap.id
                     ? "border-amber-400 ring-2 ring-amber-100"
-                    : "border-gray-200"
+                    : "border-gray-200 hover:border-gray-300 hover:shadow-md"
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-gray-800">{ap.nome}</span>
-                    <span className="text-xs bg-brand-light text-brand px-2 py-0.5 rounded-full">
+                <div className="px-3 pt-2 pb-1.5 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] bg-brand-light text-brand px-1.5 py-0.5 rounded-full font-semibold">
                       #{ap.ordem_inscricao}
                     </span>
+                    {authenticated && (
+                      <div className="flex items-center">
+                        <button
+                          onClick={() => handleEdit(ap)}
+                          className="text-gray-400 hover:text-blue-600 p-1 rounded hover:bg-blue-50 transition-colors"
+                          title="Editar"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleDelete(ap.id, ap.nome)}
+                          className="text-gray-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors"
+                          title="Remover"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  {authenticated && (
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        onClick={() => handleEdit(ap)}
-                        className="text-blue-400 hover:text-blue-600 text-xs sm:text-sm px-1.5 sm:px-2 py-1 rounded hover:bg-blue-50 transition-colors"
-                      >
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => handleDelete(ap.id, ap.nome)}
-                        className="text-red-400 hover:text-red-600 text-xs sm:text-sm px-1.5 sm:px-2 py-1 rounded hover:bg-red-50 transition-colors"
-                      >
-                        Remover
-                      </button>
-                    </div>
-                  )}
+                  <div className="group/name relative mt-0.5">
+                    <span className="font-bold text-sm text-gray-800 block truncate cursor-default">
+                      {ap.nome}
+                    </span>
+                    <span className="pointer-events-none absolute left-0 top-full mt-1 z-50 hidden group-hover/name:block bg-gray-800 text-white text-xs font-normal rounded-md px-2.5 py-1.5 shadow-lg whitespace-nowrap">
+                      {ap.nome}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-col gap-1 px-3 py-2 flex-1">
                   {ap.palpites
                     .sort((a, b) => a.prioridade - b.prioridade)
                     .map((p) => (
-                      <span
+                      <div
                         key={p.id}
-                        className="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-md"
+                        className="flex items-center gap-1.5 text-xs text-gray-600"
                       >
-                        <span className="font-bold text-gray-400">
-                          {p.prioridade}.
+                        <span className="font-bold text-gray-400 w-3 text-right shrink-0">
+                          {p.prioridade}
                         </span>
                         {p.team && (
                           <img
                             src={`/static/badges/${p.team.sofascore_id}.webp`}
                             alt=""
-                            className="w-4 h-4"
+                            className="w-4 h-4 shrink-0"
                             onError={(e) =>
                               (e.currentTarget.style.display = "none")
                             }
                           />
                         )}
-                        <span className="hidden sm:inline">
-                          {p.team ? p.team.name : `Time #${p.team_id}`}
+                        <span className="truncate">
+                          {showFullName
+                            ? (p.team ? p.team.name : `Time #${p.team_id}`)
+                            : (p.team ? p.team.name_code : `#${p.team_id}`)}
                         </span>
-                        <span className="sm:hidden">
-                          {p.team ? p.team.name_code : `#${p.team_id}`}
-                        </span>
-                      </span>
+                      </div>
                     ))}
                 </div>
               </div>
@@ -266,6 +299,41 @@ export default function Apostadores() {
             >
               Fechar
             </button>
+          </div>
+        </div>
+      )}
+
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 text-center">
+            <div className="mx-auto w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+              <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-gray-800 mb-1">Remover apostador</h3>
+            <p className="text-sm text-gray-500 mb-5">
+              Tem certeza que deseja remover <strong className="text-gray-700">{confirmDelete.nome}</strong>? Esta ação não pode ser desfeita.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmDelete(null)}
+                disabled={deleting}
+                className="flex-1 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={executeDelete}
+                disabled={deleting}
+                className="flex-1 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {deleting && (
+                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                )}
+                Remover
+              </button>
+            </div>
           </div>
         </div>
       )}
