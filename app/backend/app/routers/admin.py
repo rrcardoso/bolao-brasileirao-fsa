@@ -54,7 +54,7 @@ def get_config(_admin: str = Depends(get_current_admin)):
     )
 
 
-@router.post("/cron/sync", response_model=SyncResponse)
+@router.api_route("/cron/sync", methods=["GET", "POST"], response_model=SyncResponse)
 async def cron_sync(
     token: str = Query(...),
     db: Session = Depends(get_db),

@@ -29,4 +29,5 @@ dist/
 
 # Project context (local only)
 CONTEXTO_DEPLOY.md
+render-env.txt
 

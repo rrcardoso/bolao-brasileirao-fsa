@@ -9,7 +9,7 @@ _DAYS_TO_ADD = [2, 1, 0, 2, 1, 0, 3]
 
 
 def brasilia_now() -> datetime:
-    return datetime.now(BRT)
+    return datetime.now(BRT).replace(tzinfo=None)
 
 
 def brasilia_date() -> date:
