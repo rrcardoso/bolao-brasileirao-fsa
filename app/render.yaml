@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: bolao-brasileirao-fsa
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: app
+    buildCommand: ./build.sh
+    startCommand: cd backend && poetry run uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: BOLAO_DATABASE_URL
+        sync: false
+      - key: BOLAO_SECRET_KEY
+        generateValue: true
+      - key: BOLAO_ADMIN_USERNAME
+        sync: false
+      - key: BOLAO_ADMIN_PASSWORD
+        sync: false
+      - key: BOLAO_SCRAPEDO_TOKEN
+        sync: false
+      - key: BOLAO_CRON_SECRET
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: NODE_VERSION
+        value: "20"
