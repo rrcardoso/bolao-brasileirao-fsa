@@ -37,13 +37,17 @@ export default function Classificacao() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  const loadData = () => {
+    setLoading(true);
+    setError("");
     api
       .getStandings()
       .then(setTeams)
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { loadData(); }, []);
 
   if (loading)
     return (
@@ -54,7 +58,12 @@ export default function Classificacao() {
 
   if (error)
     return (
-      <div className="bg-red-50 text-red-700 p-4 rounded-lg">{error}</div>
+      <div className="flex flex-col items-center gap-4 py-12">
+        <div className="bg-red-50 text-red-700 p-4 rounded-lg text-center">{error}</div>
+        <button onClick={loadData} className="px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand/90 transition-colors font-medium text-sm">
+          Tentar novamente
+        </button>
+      </div>
     );
 
   if (teams.length === 0)
