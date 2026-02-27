@@ -46,6 +46,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok"}
+
+
 app.include_router(teams.router, prefix="/api/teams", tags=["times"])
 app.include_router(apostadores.router, prefix="/api/apostadores", tags=["apostadores"])
 app.include_router(ranking.router, prefix="/api/ranking", tags=["ranking"])
