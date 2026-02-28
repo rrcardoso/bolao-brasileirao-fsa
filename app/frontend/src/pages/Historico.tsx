@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../api/client";
 import EvolutionChart from "../components/EvolutionChart";
 import type { SnapshotOut } from "../types";
@@ -8,6 +8,8 @@ export default function Historico() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [metric, setMetric] = useState<"pontuacao" | "rank">("pontuacao");
+  const [fullscreen, setFullscreen] = useState(false);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
 
   const loadData = () => {
     setLoading(true);
@@ -44,26 +46,37 @@ export default function Historico() {
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
           Evolução do Campeonato
         </h2>
-        <div className="flex bg-gray-100 rounded-lg p-0.5 self-start">
+        <div className="flex items-center gap-2">
+          <div className="flex bg-gray-100 rounded-lg p-0.5">
+            <button
+              onClick={() => setMetric("pontuacao")}
+              className={`px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                metric === "pontuacao"
+                  ? "bg-white text-brand shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Pontuação
+            </button>
+            <button
+              onClick={() => setMetric("rank")}
+              className={`px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                metric === "rank"
+                  ? "bg-white text-brand shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Posição
+            </button>
+          </div>
           <button
-            onClick={() => setMetric("pontuacao")}
-            className={`px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              metric === "pontuacao"
-                ? "bg-white text-brand shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+            onClick={() => setFullscreen(true)}
+            className="p-2 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors border border-gray-200"
+            title="Tela cheia"
           >
-            Pontuação
-          </button>
-          <button
-            onClick={() => setMetric("rank")}
-            className={`px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              metric === "rank"
-                ? "bg-white text-brand shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Posição
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+            </svg>
           </button>
         </div>
       </div>
@@ -71,6 +84,50 @@ export default function Historico() {
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-3 sm:p-6">
         <EvolutionChart snapshots={snapshots} metric={metric} />
       </div>
+
+      {fullscreen && (
+        <div className="fixed inset-0 z-50 bg-white flex flex-col">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-gray-200 shrink-0">
+            <div className="flex items-center gap-3">
+              <h3 className="text-lg font-bold text-gray-800">Evolução do Campeonato</h3>
+              <div className="flex bg-gray-100 rounded-lg p-0.5">
+                <button
+                  onClick={() => setMetric("pontuacao")}
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                    metric === "pontuacao"
+                      ? "bg-white text-brand shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Pontuação
+                </button>
+                <button
+                  onClick={() => setMetric("rank")}
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                    metric === "rank"
+                      ? "bg-white text-brand shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Posição
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={() => setFullscreen(false)}
+              className="p-2 rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
+              title="Fechar tela cheia"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="flex-1 p-4 sm:p-6" ref={chartContainerRef}>
+            <EvolutionChart snapshots={snapshots} metric={metric} fullscreen />
+          </div>
+        </div>
+      )}
 
       {snapshots.length > 0 && (
         <div className="mt-4 sm:mt-6 overflow-x-auto rounded-xl border border-gray-200 shadow-sm -mx-3 sm:mx-0">
