@@ -4,9 +4,6 @@ from datetime import date, datetime, timedelta, timezone
 
 BRT = timezone(timedelta(hours=-3))
 
-# day index: Sun(0) Mon(1) Tue(2) Wed(3) Thu(4) Fri(5) Sat(6)
-_DAYS_TO_ADD = [2, 1, 0, 2, 1, 0, 3]
-
 
 def brasilia_now() -> datetime:
     return datetime.now(BRT).replace(tzinfo=None)

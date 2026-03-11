@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import urllib.parse
-from functools import lru_cache
 
 import cloudscraper
 import httpx
@@ -15,8 +14,7 @@ logger = logging.getLogger("bolao.sofascore")
 # Strategy 1: cloudscraper (bypasses Cloudflare, no external dependency)
 # ---------------------------------------------------------------------------
 
-@lru_cache(maxsize=1)
-def _get_scraper() -> cloudscraper.CloudScraper:
+def _create_scraper() -> cloudscraper.CloudScraper:
     return cloudscraper.create_scraper(
         browser={"browser": "chrome", "platform": "windows", "mobile": False}
     )
@@ -24,14 +22,14 @@ def _get_scraper() -> cloudscraper.CloudScraper:
 
 async def _fetch_cloudscraper(url: str) -> dict | None:
     try:
-        scraper = _get_scraper()
+        scraper = _create_scraper()
         resp = await asyncio.to_thread(scraper.get, url, timeout=20)
         if resp.status_code == 200:
-            logger.info("cloudscraper: OK")
+            logger.info("cloudscraper: OK (%d bytes)", len(resp.content))
             return resp.json()
-        logger.warning("cloudscraper: status %d", resp.status_code)
+        logger.warning("cloudscraper: status %d — %s", resp.status_code, resp.text[:200])
     except Exception as e:
-        logger.warning("cloudscraper: %s", e)
+        logger.warning("cloudscraper falhou: %s", e)
     return None
 
 
@@ -92,13 +90,32 @@ async def fetch_standings() -> list[dict]:
         f"{settings.TOURNAMENT_ID}/season/{settings.SEASON_ID}/standings/total"
     )
     logger.info(
-        "Buscando standings: tournament=%d, season=%d",
+        "Buscando standings: tournament=%d, season=%d, url=%s",
         settings.TOURNAMENT_ID,
         settings.SEASON_ID,
+        url,
     )
 
     data = await fetch_with_retry(url)
-    rows = data["standings"][0]["rows"]
+
+    if not isinstance(data, dict):
+        raise RuntimeError(f"Resposta inesperada da API (tipo: {type(data).__name__})")
+
+    standings_list = data.get("standings")
+    if not standings_list or not isinstance(standings_list, list):
+        keys = list(data.keys())[:10] if isinstance(data, dict) else str(data)[:200]
+        raise RuntimeError(
+            f"Campo 'standings' ausente ou inválido na resposta. "
+            f"Chaves recebidas: {keys}"
+        )
+
+    rows = standings_list[0].get("rows")
+    if not rows:
+        raise RuntimeError(
+            "Campo 'rows' ausente ou vazio no primeiro grupo de standings."
+        )
+
+    logger.info("Sofascore retornou %d times.", len(rows))
 
     return [
         {
@@ -107,13 +124,13 @@ async def fetch_standings() -> list[dict]:
             "teamSlug": row["team"].get("slug", ""),
             "teamNameCode": row["team"].get("nameCode", ""),
             "position": row["position"],
-            "points": row["points"],
-            "matches": row["matches"],
-            "wins": row["wins"],
+            "points": row.get("points", 0),
+            "matches": row.get("matches", 0),
+            "wins": row.get("wins", 0),
             "draws": row.get("draws", 0),
             "losses": row.get("losses", 0),
-            "scoresFor": row["scoresFor"],
-            "scoresAgainst": row["scoresAgainst"],
+            "scoresFor": row.get("scoresFor", 0),
+            "scoresAgainst": row.get("scoresAgainst", 0),
         }
         for row in rows
     ]

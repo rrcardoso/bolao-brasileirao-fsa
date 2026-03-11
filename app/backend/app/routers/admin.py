@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -14,32 +15,45 @@ logger = logging.getLogger("bolao.admin")
 router = APIRouter()
 
 
+async def _run_sync(db: Session, source: str) -> SyncResponse:
+    try:
+        standings = await sync_service.sync_standings(db)
+    except Exception as e:
+        logger.error("%s — sync_standings falhou: %s\n%s", source, e, traceback.format_exc())
+        raise HTTPException(status_code=502, detail=f"Sync falhou: {e}")
+
+    try:
+        team_ids = [s["teamId"] for s in standings]
+        badges_downloaded = await badges_service.download_all_badges(team_ids)
+    except Exception as e:
+        logger.warning("%s — badges falhou (não-crítico): %s", source, e)
+        badges_downloaded = 0
+
+    apostadores_count = db.query(Apostador).count()
+    session_key = None
+    if apostadores_count > 0:
+        try:
+            session_key = historico_service.record_snapshot(db)
+        except Exception as e:
+            logger.error("%s — record_snapshot falhou: %s\n%s", source, e, traceback.format_exc())
+
+    badge_msg = f", {badges_downloaded} escudos novos" if badges_downloaded else ""
+    msg = f"{source} OK: {len(standings)} times atualizados{badge_msg}."
+    logger.info(msg)
+    return SyncResponse(
+        teams_count=len(standings),
+        apostadores_count=apostadores_count,
+        historico_session=session_key,
+        message=msg,
+    )
+
+
 @router.post("/sync", response_model=SyncResponse)
 async def sync_data(
     db: Session = Depends(get_db),
     _admin: str = Depends(get_current_admin),
 ):
-    try:
-        standings = await sync_service.sync_standings(db)
-    except RuntimeError as e:
-        logger.error("Sync falhou: %s", e)
-        raise HTTPException(status_code=502, detail=str(e))
-
-    team_ids = [s["teamId"] for s in standings]
-    badges_downloaded = await badges_service.download_all_badges(team_ids)
-
-    apostadores_count = db.query(Apostador).count()
-    session_key = None
-    if apostadores_count > 0:
-        session_key = historico_service.record_snapshot(db)
-
-    badge_msg = f", {badges_downloaded} escudos novos" if badges_downloaded else ""
-    return SyncResponse(
-        teams_count=len(standings),
-        apostadores_count=apostadores_count,
-        historico_session=session_key,
-        message=f"Sync OK: {len(standings)} times atualizados{badge_msg}.",
-    )
+    return await _run_sync(db, "Sync")
 
 
 @router.get("/config", response_model=ConfigOut)
@@ -62,24 +76,4 @@ async def cron_sync(
     if token != settings.CRON_SECRET:
         raise HTTPException(status_code=403, detail="Token inválido.")
 
-    try:
-        standings = await sync_service.sync_standings(db)
-    except RuntimeError as e:
-        logger.error("Cron sync falhou: %s", e)
-        raise HTTPException(status_code=502, detail=str(e))
-
-    team_ids = [s["teamId"] for s in standings]
-    badges_downloaded = await badges_service.download_all_badges(team_ids)
-
-    apostadores_count = db.query(Apostador).count()
-    session_key = None
-    if apostadores_count > 0:
-        session_key = historico_service.record_snapshot(db)
-
-    badge_msg = f", {badges_downloaded} escudos novos" if badges_downloaded else ""
-    return SyncResponse(
-        teams_count=len(standings),
-        apostadores_count=apostadores_count,
-        historico_session=session_key,
-        message=f"Cron sync OK: {len(standings)} times atualizados{badge_msg}.",
-    )
+    return await _run_sync(db, "Cron sync")

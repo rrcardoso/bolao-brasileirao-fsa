@@ -19,6 +19,8 @@ async def sync_standings(db: Session) -> list[dict]:
             f"(mínimo: {settings.MIN_TEAMS_PROTECTION}). Dados não atualizados."
         )
 
+    updated = 0
+    created = 0
     for row in standings:
         team = db.query(Team).filter(Team.sofascore_id == row["teamId"]).first()
         if team:
@@ -34,6 +36,7 @@ async def sync_standings(db: Session) -> list[dict]:
             team.goals_for = row["scoresFor"]
             team.goals_against = row["scoresAgainst"]
             team.updated_at = brasilia_now()
+            updated += 1
         else:
             team = Team(
                 sofascore_id=row["teamId"],
@@ -50,7 +53,11 @@ async def sync_standings(db: Session) -> list[dict]:
                 goals_against=row["scoresAgainst"],
             )
             db.add(team)
+            created += 1
 
     db.commit()
-    logger.info("Sync: %d times atualizados.", len(standings))
+    logger.info(
+        "Sync: %d times (%d atualizados, %d novos).",
+        len(standings), updated, created,
+    )
     return standings
