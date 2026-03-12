@@ -29,7 +29,7 @@ function LoginForm() {
     <div className="flex items-center justify-center py-10 sm:py-20 px-2">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sm:p-8 w-full max-w-sm space-y-5"
+        className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 sm:p-8 w-full max-w-sm space-y-5"
       >
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-light mb-3">
@@ -47,14 +47,14 @@ function LoginForm() {
               />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-gray-800">Acesso Admin</h2>
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Acesso Admin</h2>
           <p className="text-sm text-gray-400 mt-1">
             Insira suas credenciais para continuar
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
             Usuário
           </label>
           <input
@@ -63,12 +63,12 @@ function LoginForm() {
             onChange={(e) => setUsername(e.target.value)}
             required
             autoComplete="username"
-            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+            className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
             Senha
           </label>
           <input
@@ -77,12 +77,12 @@ function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
-            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+            className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none"
           />
         </div>
 
         {error && (
-          <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+          <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 p-3 rounded-lg">
             {error}
           </div>
         )}
@@ -127,7 +127,7 @@ function AdminPanel() {
   return (
     <div className="max-w-2xl space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Admin</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">Admin</h2>
         <button
           onClick={logout}
           className="text-sm text-gray-400 hover:text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
@@ -136,8 +136,8 @@ function AdminPanel() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3 sm:mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 sm:p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-200 mb-3 sm:mb-4">
           Sincronizar Dados
         </h3>
         <p className="text-sm text-gray-500 mb-4">
@@ -160,7 +160,7 @@ function AdminPanel() {
         </button>
 
         {syncResult && (
-          <div className="mt-4 bg-green-50 text-green-700 p-4 rounded-lg text-sm">
+          <div className="mt-4 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 p-4 rounded-lg text-sm">
             <p className="font-semibold">{syncResult.message}</p>
             <ul className="mt-1 list-disc list-inside text-green-600">
               <li>{syncResult.teams_count} times atualizados</li>
@@ -173,15 +173,15 @@ function AdminPanel() {
         )}
 
         {error && (
-          <div className="mt-4 bg-red-50 text-red-700 p-4 rounded-lg text-sm">
+          <div className="mt-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 p-4 rounded-lg text-sm">
             {error}
           </div>
         )}
       </div>
 
       {config && (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3 sm:mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-200 mb-3 sm:mb-4">
             Configuração Atual
           </h3>
           <dl className="grid grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-3 text-sm">

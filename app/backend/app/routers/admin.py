@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import traceback
 
@@ -13,6 +14,9 @@ from ..services import badges_service, historico_service, sync_service
 
 logger = logging.getLogger("bolao.admin")
 router = APIRouter()
+
+CRON_SYNC_RETRIES = 2
+CRON_RETRY_DELAY = 10.0
 
 
 async def _run_sync(db: Session, source: str) -> SyncResponse:
@@ -76,4 +80,17 @@ async def cron_sync(
     if token != settings.CRON_SECRET:
         raise HTTPException(status_code=403, detail="Token inválido.")
 
-    return await _run_sync(db, "Cron sync")
+    last_error = None
+    for attempt in range(CRON_SYNC_RETRIES + 1):
+        try:
+            return await _run_sync(db, f"Cron sync (tentativa {attempt + 1})")
+        except HTTPException as e:
+            last_error = e
+            if attempt < CRON_SYNC_RETRIES:
+                logger.warning(
+                    "Cron sync tentativa %d falhou, retentando em %.0fs...",
+                    attempt + 1, CRON_RETRY_DELAY,
+                )
+                await asyncio.sleep(CRON_RETRY_DELAY)
+
+    raise last_error

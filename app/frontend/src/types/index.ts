@@ -35,6 +35,11 @@ export interface RankingEntry {
   apostador: string;
   ordem_inscricao: number;
   total: number;
+  total_jogos: number;
+  media_pontos: number;
+  aproveitamento: number;
+  delta_pontos: number | null;
+  delta_rank: number | null;
   pontos: number[];
   times: string[];
   times_codes: string[];
@@ -45,6 +50,7 @@ export interface RankingEntry {
 export interface RankingResponse {
   updated_at: string;
   display_column: string;
+  rodada: number;
   entries: RankingEntry[];
 }
 

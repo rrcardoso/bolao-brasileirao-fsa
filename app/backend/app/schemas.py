@@ -81,6 +81,11 @@ class RankingEntry(BaseModel):
     apostador: str
     ordem_inscricao: int
     total: int
+    total_jogos: int
+    media_pontos: float
+    aproveitamento: float
+    delta_pontos: int | None = None
+    delta_rank: int | None = None
     pontos: list[int]
     times: list[str]
     times_codes: list[str]
@@ -91,6 +96,7 @@ class RankingEntry(BaseModel):
 class RankingResponse(BaseModel):
     updated_at: str
     display_column: str
+    rodada: int
     entries: list[RankingEntry]
 
 

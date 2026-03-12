@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-brand: 44 90 160;
+  --color-brand-dark: 30 63 115;
+  --color-brand-light: 217 226 243;
+  color-scheme: light;
+}
+
+.dark {
+  --color-brand: 96 165 250;
+  --color-brand-dark: 59 130 246;
+  --color-brand-light: 30 58 95;
+  color-scheme: dark;
+}
+
 body {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
 }

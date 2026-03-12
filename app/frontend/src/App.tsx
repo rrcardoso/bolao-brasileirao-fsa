@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Route, Routes, useLocation } from "react-router-dom";
 import Ranking from "./pages/Ranking";
 import Classificacao from "./pages/Classificacao";
@@ -17,18 +17,36 @@ const navItems = [
   { to: "/admin", label: "Admin", protected: true },
 ];
 
+function useDarkMode() {
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (dark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+      if (meta) meta.setAttribute("content", "#1f2937");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+      if (meta) meta.setAttribute("content", "#1e40af");
+    }
+  }, [dark]);
+  return [dark, () => setDark((d) => !d)] as const;
+}
+
 export default function App() {
   const { authenticated } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const [dark, toggleDark] = useDarkMode();
 
   function closeMenu() {
     setMenuOpen(false);
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-brand text-white shadow-md sticky top-0 z-50">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+      <header className="bg-brand dark:bg-gray-800 text-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <NavLink to="/" className="flex items-center gap-2.5" onClick={closeMenu}>
             <img src="/logo.png" alt="" className="w-8 h-8 rounded-lg" />
@@ -60,6 +78,24 @@ export default function App() {
             ))}
           </nav>
 
+          <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={toggleDark}
+            className="p-2 rounded-md hover:bg-white/10 transition-colors"
+            aria-label={dark ? "Modo claro" : "Modo escuro"}
+            title={dark ? "Modo claro" : "Modo escuro"}
+          >
+            {dark ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            )}
+          </button>
           {/* Mobile hamburger */}
           <button
             type="button"
@@ -77,11 +113,12 @@ export default function App() {
               </svg>
             )}
           </button>
+          </div>
         </div>
 
         {/* Mobile menu dropdown */}
         {menuOpen && (
-          <nav className="md:hidden border-t border-white/10 px-4 pb-3 pt-1 space-y-1">
+          <nav className="md:hidden border-t border-white/10 px-4 pb-3 pt-1 space-y-1 bg-brand dark:bg-gray-800">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -118,7 +155,7 @@ export default function App() {
         </Routes>
       </main>
 
-      <footer className="text-center text-xs text-gray-400 py-4 border-t">
+      <footer className="text-center text-xs text-gray-400 dark:text-gray-500 py-4 border-t dark:border-gray-700">
         Bolão Brasileirão 2026 &mdash; Dados: Sofascore API
       </footer>
     </div>

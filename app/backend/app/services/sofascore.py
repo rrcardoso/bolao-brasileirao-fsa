@@ -9,9 +9,34 @@ from ..config import settings
 
 logger = logging.getLogger("bolao.sofascore")
 
+_HTTPX_HEADERS = {
+    "User-Agent": settings.SOFASCORE_USER_AGENT,
+    "Accept": "application/json",
+    "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://www.sofascore.com/",
+    "Origin": "https://www.sofascore.com",
+}
+
 
 # ---------------------------------------------------------------------------
-# Strategy 1: cloudscraper (bypasses Cloudflare, no external dependency)
+# Strategy 1: plain httpx (fastest — works when Cloudflare isn't blocking)
+# ---------------------------------------------------------------------------
+
+async def _fetch_httpx(url: str) -> dict | None:
+    try:
+        async with httpx.AsyncClient(timeout=15.0, headers=_HTTPX_HEADERS) as client:
+            resp = await client.get(url)
+            if resp.status_code == 200:
+                logger.info("httpx direto: OK (%d bytes)", len(resp.content))
+                return resp.json()
+            logger.warning("httpx direto: status %d", resp.status_code)
+    except Exception as e:
+        logger.warning("httpx direto falhou: %s", e)
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Strategy 2: cloudscraper (bypasses Cloudflare JS challenge)
 # ---------------------------------------------------------------------------
 
 def _create_scraper() -> cloudscraper.CloudScraper:
@@ -34,13 +59,13 @@ async def _fetch_cloudscraper(url: str) -> dict | None:
 
 
 # ---------------------------------------------------------------------------
-# Strategy 2: scrape.do proxy (fallback, requires BOLAO_SCRAPEDO_TOKEN)
+# Strategy 3: scrape.do proxy (requires BOLAO_SCRAPEDO_TOKEN)
 # ---------------------------------------------------------------------------
 
 async def _fetch_scrapedo(url: str) -> dict | None:
     token = settings.SCRAPEDO_TOKEN
     if not token:
-        logger.info("scrape.do: token não configurado, pulando fallback.")
+        logger.info("scrape.do: token não configurado, pulando.")
         return None
 
     encoded_url = urllib.parse.quote(url, safe="")
@@ -50,37 +75,52 @@ async def _fetch_scrapedo(url: str) -> dict | None:
         async with httpx.AsyncClient(timeout=30.0) as client:
             resp = await client.get(proxy_url)
             if resp.status_code == 200:
-                logger.info("scrape.do: OK")
+                logger.info("scrape.do: OK (%d bytes)", len(resp.content))
                 return resp.json()
             logger.warning("scrape.do: status %d — %s", resp.status_code, resp.text[:200])
     except Exception as e:
-        logger.warning("scrape.do: %s", e)
+        logger.warning("scrape.do falhou: %s", e)
     return None
 
 
 # ---------------------------------------------------------------------------
-# Fetch with fallback chain
+# Fetch with fallback chain + retries
 # ---------------------------------------------------------------------------
 
+_STRATEGIES = [
+    ("httpx", _fetch_httpx),
+    ("cloudscraper", _fetch_cloudscraper),
+    ("scrape.do", _fetch_scrapedo),
+]
+
+
 async def fetch_with_retry(url: str) -> dict:
-    """Tenta cloudscraper primeiro; se falhar, tenta scrape.do como fallback."""
+    """
+    Tries multiple strategies with retries and exponential backoff.
+    Order: httpx → cloudscraper → scrape.do, repeated up to MAX_RETRIES.
+    """
+    max_retries = settings.SOFASCORE_MAX_RETRIES
+    base_delay = settings.SOFASCORE_RETRY_DELAY
+    errors: list[str] = []
 
-    for attempt in range(settings.SOFASCORE_MAX_RETRIES + 1):
-        data = await _fetch_cloudscraper(url)
-        if data:
-            return data
+    for attempt in range(max_retries + 1):
+        if attempt > 0:
+            delay = base_delay * attempt
+            logger.info("Tentativa %d/%d — aguardando %.1fs...", attempt + 1, max_retries + 1, delay)
+            await asyncio.sleep(delay)
 
-        if attempt < settings.SOFASCORE_MAX_RETRIES:
-            await asyncio.sleep(settings.SOFASCORE_RETRY_DELAY)
-
-    data = await _fetch_scrapedo(url)
-    if data:
-        return data
+        for name, fetch_fn in _STRATEGIES:
+            data = await fetch_fn(url)
+            if data:
+                if attempt > 0:
+                    logger.info("Sucesso na tentativa %d via %s.", attempt + 1, name)
+                return data
+            errors.append(f"{name} (tentativa {attempt + 1})")
 
     raise RuntimeError(
-        "API Sofascore falhou em todos os métodos (cloudscraper + scrape.do). "
-        "Verifique se o season_id está correto e se o campeonato já começou. "
-        "Para usar scrape.do, configure BOLAO_SCRAPEDO_TOKEN."
+        f"Sofascore falhou após {max_retries + 1} tentativas em todos os métodos: "
+        f"{', '.join(errors)}. "
+        "Verifique se o season_id está correto e se o campeonato já começou."
     )
 
 

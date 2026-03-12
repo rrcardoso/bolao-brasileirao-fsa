@@ -1,0 +1,17 @@
+{
+  "name": "Bolão Brasileirão 2026",
+  "short_name": "Bolão 2026",
+  "description": "Bolão do Brasileirão Série A — 2026",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#1e40af",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

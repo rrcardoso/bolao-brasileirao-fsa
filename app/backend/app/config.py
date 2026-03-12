@@ -15,8 +15,8 @@ class Settings(BaseSettings):
     SOFASCORE_USER_AGENT: str = (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     )
-    SOFASCORE_MAX_RETRIES: int = 1
-    SOFASCORE_RETRY_DELAY: float = 3.0
+    SOFASCORE_MAX_RETRIES: int = 3
+    SOFASCORE_RETRY_DELAY: float = 2.0
 
     SCRAPEDO_TOKEN: str = ""
 

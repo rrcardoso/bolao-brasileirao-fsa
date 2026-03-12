@@ -1,8 +1,19 @@
+import logging
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+
+_bolao_logger = logging.getLogger("bolao")
+if not _bolao_logger.handlers:
+    _handler = logging.StreamHandler()
+    _handler.setFormatter(
+        logging.Formatter("%(asctime)s [%(name)s] %(levelname)s: %(message)s",
+                          datefmt="%Y-%m-%d %H:%M:%S")
+    )
+    _bolao_logger.addHandler(_handler)
+    _bolao_logger.setLevel(logging.INFO)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles

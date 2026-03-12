@@ -108,7 +108,7 @@ function CustomTooltip({
     );
     const top10 = sorted.slice(0, 10);
     return (
-      <div className="bg-white rounded-lg border border-gray-200 shadow-lg p-3 max-h-80 overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg p-3 max-h-80 overflow-y-auto">
         <div className="flex items-center gap-2 text-xs font-bold text-gray-700 mb-2 border-b border-gray-100 pb-1.5">
           <span>Rodada {rod} — {parts[2]}/{parts[1]}/{parts[0]}</span>
           <span className="font-normal text-gray-400 ml-auto">Top 10</span>
@@ -143,7 +143,7 @@ function CustomTooltip({
   const sameValue = valid.filter((p) => p.value === target.value);
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-lg px-3 py-2">
+    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg px-3 py-2">
       <div className="text-[10px] text-gray-400 mb-1">
         R{rod} — {parts[2]}/{parts[1]}/{parts[0]}
       </div>

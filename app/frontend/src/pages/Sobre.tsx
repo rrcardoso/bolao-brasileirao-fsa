@@ -8,23 +8,23 @@ export default function Sobre() {
           alt="Logo Bolão Brasileirão"
           className="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-2xl shadow-lg"
         />
-        <h1 className="text-3xl font-extrabold text-gray-800">
+        <h1 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100">
           Bolão Brasileirão 2026
         </h1>
-        <p className="text-gray-500">
+        <p className="text-gray-500 dark:text-gray-400">
           O bolão mais disputado de Formosa — GO
         </p>
       </div>
 
       {/* ===================== SOBRE O BOLÃO ===================== */}
       <div className="space-y-1">
-        <h2 className="text-2xl font-extrabold text-gray-800 border-b-2 border-brand pb-2">
+        <h2 className="text-2xl font-extrabold text-gray-800 dark:text-gray-100 border-b-2 border-brand pb-2">
           Sobre o Bolão
         </h2>
       </div>
 
-      <section className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <p className="text-sm text-gray-600 leading-relaxed">
+      <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 sm:p-6 space-y-4">
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
           O Bolão Brasileirão é uma brincadeira entre amigos da cidade de{" "}
           <strong>Formosa — GO</strong>, onde cada participante escolhe 7 times
           do Campeonato Brasileiro Série A e acompanha a pontuação ao longo de
@@ -34,8 +34,8 @@ export default function Sobre() {
         </p>
 
         {/* Formosa */}
-        <div className="border-t pt-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+        <div className="border-t dark:border-gray-700 pt-4">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
             <span>📍</span> Formosa — GO
           </h3>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -65,31 +65,31 @@ export default function Sobre() {
         </div>
 
         {/* Regras */}
-        <div className="border-t pt-4">
+        <div className="border-t dark:border-gray-700 pt-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
             <span>📋</span> Regras
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
               <p className="font-semibold text-gray-700 mb-1">Entrada</p>
               <p className="text-sm text-gray-600">R$ 130,00 por participante</p>
               <p className="text-xs text-gray-400 mt-1">
                 R$ 100 premiação + R$ 30 confraternização
               </p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
               <p className="font-semibold text-gray-700 mb-1">Seleção</p>
               <p className="text-sm text-gray-600">
                 Cada apostador escolhe 7 times com prioridade de 1 a 7
               </p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
               <p className="font-semibold text-gray-700 mb-1">Pontuação</p>
               <p className="text-sm text-gray-600">
                 Soma dos pontos dos 7 times no Brasileirão Série A
               </p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4 sm:col-span-2">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:col-span-2">
               <p className="font-semibold text-gray-700 mb-2">Critérios de Desempate</p>
               <p className="text-sm text-gray-600 mb-3">
                 Se dois ou mais apostadores tiverem a mesma pontuação total, o desempate segue esta ordem:
@@ -115,13 +115,13 @@ export default function Sobre() {
 
       {/* ===================== SOBRE O APP ===================== */}
       <div className="space-y-1">
-        <h2 className="text-2xl font-extrabold text-gray-800 border-b-2 border-brand pb-2">
+        <h2 className="text-2xl font-extrabold text-gray-800 dark:text-gray-100 border-b-2 border-brand pb-2">
           Sobre o App
         </h2>
       </div>
 
-      <section className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <p className="text-sm text-gray-600 leading-relaxed">
+      <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 sm:p-6 space-y-4">
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
           Este sistema foi desenvolvido para consulta e acompanhamento em tempo real
           do ranking, substituindo planilhas manuais por uma aplicação web moderna
           e automatizada. O backend em Python consome dados ao vivo do Sofascore,
@@ -129,7 +129,7 @@ export default function Sobre() {
         </p>
 
         {/* Stack */}
-        <div className="border-t pt-4">
+        <div className="border-t dark:border-gray-700 pt-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-3">
             Stack Tecnológica
           </h3>
@@ -163,7 +163,7 @@ export default function Sobre() {
         </div>
 
         {/* Funcionalidades */}
-        <div className="border-t pt-4">
+        <div className="border-t dark:border-gray-700 pt-4">
           <h3 className="text-sm font-semibold text-gray-700 mb-2">
             Funcionalidades
           </h3>
@@ -188,7 +188,7 @@ export default function Sobre() {
       </section>
 
       {/* Desenvolvedor */}
-      <section className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 space-y-4">
+      <section className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 sm:p-6 space-y-4">
         <h3 className="text-lg font-bold text-brand flex items-center gap-2">
           <span className="text-xl">👨‍💻</span> Desenvolvedor
         </h3>
@@ -198,7 +198,7 @@ export default function Sobre() {
           </div>
           <div className="space-y-2">
             <div>
-              <h4 className="font-bold text-gray-800 text-lg">
+              <h4 className="font-bold text-gray-800 dark:text-gray-100 text-lg">
                 Rodrigo Ribeiro Cardoso
               </h4>
               <p className="text-sm text-gray-500">

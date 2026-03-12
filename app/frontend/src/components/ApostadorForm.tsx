@@ -106,7 +106,7 @@ export default function ApostadorForm({ onSaved, editing, onCancelEdit }: Props)
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 space-y-4"
+      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 sm:p-6 space-y-4"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-base sm:text-lg font-bold text-brand">
@@ -125,7 +125,7 @@ export default function ApostadorForm({ onSaved, editing, onCancelEdit }: Props)
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
             Nome
           </label>
           <input
@@ -134,11 +134,11 @@ export default function ApostadorForm({ onSaved, editing, onCancelEdit }: Props)
             onChange={(e) => setNome(e.target.value)}
             required
             placeholder="Ex: Nery"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
             Ordem de Inscrição
           </label>
           <input
@@ -147,7 +147,7 @@ export default function ApostadorForm({ onSaved, editing, onCancelEdit }: Props)
             onChange={(e) => setOrdem(Number(e.target.value))}
             min={1}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-brand focus:border-brand outline-none"
           />
         </div>
       </div>

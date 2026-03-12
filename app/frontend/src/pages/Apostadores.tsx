@@ -108,7 +108,7 @@ export default function Apostadores() {
       <div className={authenticated ? "lg:col-span-2" : ""}>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Apostadores</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">Apostadores</h2>
             <p className="text-xs text-gray-400 mt-0.5">
               {sorted.length} participante{sorted.length !== 1 ? "s" : ""} — ordenados por inscrição
             </p>
@@ -186,13 +186,13 @@ export default function Apostadores() {
             {sorted.map((ap) => (
               <div
                 key={ap.id}
-                className={`bg-white rounded-xl border shadow-sm flex flex-col transition-colors overflow-visible ${
+                className={`bg-white dark:bg-gray-800 rounded-xl border shadow-sm flex flex-col transition-colors overflow-visible ${
                   editing?.id === ap.id
                     ? "border-amber-400 ring-2 ring-amber-100"
-                    : "border-gray-200 hover:border-gray-300 hover:shadow-md"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:shadow-md"
                 }`}
               >
-                <div className="px-3 pt-2 pb-1.5 border-b border-gray-100">
+                <div className="px-3 pt-2 pb-1.5 border-b border-gray-100 dark:border-gray-700">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] bg-brand-light text-brand px-1.5 py-0.5 rounded-full font-semibold">
                       #{ap.ordem_inscricao}
@@ -221,7 +221,7 @@ export default function Apostadores() {
                     )}
                   </div>
                   <div className="group/name relative mt-0.5">
-                    <span className="font-bold text-sm text-gray-800 block truncate cursor-default">
+                    <span className="font-bold text-sm text-gray-800 dark:text-gray-100 block truncate cursor-default">
                       {ap.nome}
                     </span>
                     <span className="pointer-events-none absolute left-0 top-full mt-1 z-50 hidden group-hover/name:block bg-gray-800 text-white text-xs font-normal rounded-md px-2.5 py-1.5 shadow-lg whitespace-nowrap">
@@ -266,8 +266,8 @@ export default function Apostadores() {
 
       {importResult && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">Resultado da Importação</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6">
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Resultado da Importação</h3>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-green-500 shrink-0" />
@@ -305,13 +305,13 @@ export default function Apostadores() {
 
       {confirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full p-6 text-center">
             <div className="mx-auto w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-800 mb-1">Remover apostador</h3>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Remover apostador</h3>
             <p className="text-sm text-gray-500 mb-5">
               Tem certeza que deseja remover <strong className="text-gray-700">{confirmDelete.nome}</strong>? Esta ação não pode ser desfeita.
             </p>

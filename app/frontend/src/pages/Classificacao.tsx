@@ -16,11 +16,11 @@ function BadgeImg({ sofascoreId }: { sofascoreId: number }) {
 }
 
 const ZONE_COLORS: Record<string, string> = {
-  libertadores: "border-l-4 border-green-700 bg-green-50/50",
-  preLibertadores: "border-l-4 border-green-400 bg-green-50/30",
-  sulamericana: "border-l-4 border-blue-500 bg-blue-50/50",
-  nenhuma: "border-l-4 border-orange-400 bg-orange-50/50",
-  rebaixamento: "border-l-4 border-red-500 bg-red-50/50",
+  libertadores: "border-l-4 border-green-700 bg-green-50/50 dark:bg-green-900/30",
+  preLibertadores: "border-l-4 border-green-400 bg-green-50/30 dark:bg-green-900/20",
+  sulamericana: "border-l-4 border-blue-500 bg-blue-50/50 dark:bg-blue-900/30",
+  nenhuma: "border-l-4 border-orange-400 bg-orange-50/50 dark:bg-orange-900/20",
+  rebaixamento: "border-l-4 border-red-500 bg-red-50/50 dark:bg-red-900/30",
 };
 
 function getZone(position: number) {
@@ -59,7 +59,7 @@ export default function Classificacao() {
   if (error)
     return (
       <div className="flex flex-col items-center gap-4 py-12">
-        <div className="bg-red-50 text-red-700 p-4 rounded-lg text-center">{error}</div>
+        <div className="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 p-4 rounded-lg text-center">{error}</div>
         <button onClick={loadData} className="px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand/90 transition-colors font-medium text-sm">
           Tentar novamente
         </button>
@@ -74,23 +74,25 @@ export default function Classificacao() {
     );
 
   const lastUpdate = teams[0]?.updated_at;
+  const rodada = Math.max(...teams.map((t) => t.matches));
 
   return (
     <div>
       <div className="flex flex-col gap-3 mb-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
               Brasileirão Série A — 2026
             </h2>
-            {lastUpdate && (
-              <p className="text-xs text-gray-400 mt-1">
-                Atualizado em:{" "}
+            <p className="text-xs text-gray-400 mt-1">
+              Rodada {rodada}
+              {lastUpdate && (
+                <> &middot; Atualizado em:{" "}
                 {new Date(lastUpdate).toLocaleString("pt-BR", {
                   timeZone: "America/Sao_Paulo",
-                })}
-              </p>
-            )}
+                })}</>
+              )}
+            </p>
           </div>
         </div>
         <div className="flex flex-wrap gap-x-3 gap-y-1.5 text-xs">
@@ -112,10 +114,10 @@ export default function Classificacao() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm -mx-3 sm:mx-0">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm -mx-3 sm:mx-0">
         <table className="min-w-[480px] w-full text-sm">
           <thead>
-            <tr className="bg-brand text-white text-xs uppercase tracking-wider">
+            <tr className="bg-brand dark:bg-gray-700 text-white text-xs uppercase tracking-wider">
               <th className="px-2 sm:px-3 py-2.5 text-center w-10 sm:w-12">#</th>
               <th className="px-2 sm:px-3 py-2.5 text-left">Time</th>
               <th className="px-1.5 sm:px-3 py-2.5 text-center">P</th>
@@ -138,19 +140,19 @@ export default function Classificacao() {
                 <tr
                   key={team.id}
                   className={`${zoneClass} ${
-                    !zone && idx % 2 === 0 ? "bg-white" : !zone ? "bg-gray-50" : ""
-                  } hover:bg-blue-50/70 transition-colors`}
+                    !zone && idx % 2 === 0 ? "bg-white dark:bg-gray-800" : !zone ? "bg-gray-50 dark:bg-gray-800/50" : ""
+                  } hover:bg-blue-50/70 dark:hover:bg-gray-700 transition-colors`}
                 >
-                  <td className="px-2 sm:px-3 py-2 sm:py-2.5 text-center font-bold text-gray-500">
+                  <td className="px-2 sm:px-3 py-2 sm:py-2.5 text-center font-bold text-gray-500 dark:text-gray-400">
                     {team.position}
                   </td>
                   <td className="px-2 sm:px-3 py-2.5">
                     <div className="flex items-center gap-1.5 sm:gap-2">
                       <BadgeImg sofascoreId={team.sofascore_id} />
-                      <span className="font-semibold text-gray-800 hidden sm:inline">
+                      <span className="font-semibold text-gray-800 dark:text-gray-100 hidden sm:inline">
                         {team.name}
                       </span>
-                      <span className="font-semibold text-gray-800 sm:hidden text-xs">
+                      <span className="font-semibold text-gray-800 dark:text-gray-100 sm:hidden text-xs">
                         {team.name_code}
                       </span>
                       <span className="text-xs text-gray-400 font-mono hidden sm:inline">
@@ -161,22 +163,22 @@ export default function Classificacao() {
                   <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center font-bold text-brand text-sm sm:text-base">
                     {team.points}
                   </td>
-                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600">
+                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600 dark:text-gray-300">
                     {team.matches}
                   </td>
-                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600">
+                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600 dark:text-gray-300">
                     {team.wins}
                   </td>
-                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600">
+                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600 dark:text-gray-300">
                     {team.draws}
                   </td>
-                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600">
+                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600 dark:text-gray-300">
                     {team.losses}
                   </td>
-                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600 hidden sm:table-cell">
+                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600 dark:text-gray-300 hidden sm:table-cell">
                     {team.goals_for}
                   </td>
-                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600 hidden sm:table-cell">
+                  <td className="px-1.5 sm:px-3 py-2 sm:py-2.5 text-center text-gray-600 dark:text-gray-300 hidden sm:table-cell">
                     {team.goals_against}
                   </td>
                   <td

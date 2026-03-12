@@ -46,8 +46,8 @@ export default function TeamSelect({
         }}
         className={`w-full flex items-center gap-2 px-3 py-2 border rounded-lg text-sm text-left outline-none focus:ring-2 focus:ring-brand ${
           isDuplicate
-            ? "border-red-400 bg-red-50"
-            : "border-gray-300 bg-white"
+            ? "border-red-400 bg-red-50 dark:bg-red-900/30"
+            : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100"
         }`}
       >
         {selected ? (
@@ -79,14 +79,14 @@ export default function TeamSelect({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-hidden flex flex-col">
+        <div className="absolute z-50 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-hidden flex flex-col">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar time..."
             autoFocus
-            className="px-3 py-2 border-b border-gray-100 text-sm outline-none"
+            className="px-3 py-2 border-b border-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-sm outline-none"
           />
           <div className="overflow-y-auto">
             {value !== "" && (
@@ -109,9 +109,9 @@ export default function TeamSelect({
                   onChange(t.sofascore_id);
                   setOpen(false);
                 }}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-blue-50 transition-colors ${
+                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-blue-50 dark:hover:bg-gray-600 transition-colors ${
                   t.sofascore_id === value
-                    ? "bg-brand-light font-medium"
+                    ? "bg-brand-light dark:bg-brand-dark font-medium"
                     : ""
                 }`}
               >

@@ -33,7 +33,7 @@ export default function Historico() {
   if (error)
     return (
       <div className="flex flex-col items-center gap-4 py-12">
-        <div className="bg-red-50 text-red-700 p-4 rounded-lg text-center">{error}</div>
+        <div className="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 p-4 rounded-lg text-center">{error}</div>
         <button onClick={loadData} className="px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand/90 transition-colors font-medium text-sm">
           Tentar novamente
         </button>
@@ -43,17 +43,17 @@ export default function Historico() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
           Evolução do Campeonato
         </h2>
         <div className="flex items-center gap-2">
-          <div className="flex bg-gray-100 rounded-lg p-0.5">
+          <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
             <button
               onClick={() => setMetric("pontuacao")}
               className={`px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 metric === "pontuacao"
-                  ? "bg-white text-brand shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-white dark:bg-gray-600 text-brand shadow-sm"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700"
               }`}
             >
               Pontuação
@@ -62,8 +62,8 @@ export default function Historico() {
               onClick={() => setMetric("rank")}
               className={`px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 metric === "rank"
-                  ? "bg-white text-brand shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-white dark:bg-gray-600 text-brand shadow-sm"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700"
               }`}
             >
               Posição
@@ -71,7 +71,7 @@ export default function Historico() {
           </div>
           <button
             onClick={() => setFullscreen(true)}
-            className="p-2 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors border border-gray-200"
+            className="p-2 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-600"
             title="Tela cheia"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -81,22 +81,22 @@ export default function Historico() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-3 sm:p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3 sm:p-6">
         <EvolutionChart snapshots={snapshots} metric={metric} />
       </div>
 
       {fullscreen && (
-        <div className="fixed inset-0 z-50 bg-white flex flex-col">
-          <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-gray-200 shrink-0">
+        <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900 flex flex-col">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-gray-200 dark:border-gray-700 shrink-0">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-bold text-gray-800">Evolução do Campeonato</h3>
-              <div className="flex bg-gray-100 rounded-lg p-0.5">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Evolução do Campeonato</h3>
+              <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
                 <button
                   onClick={() => setMetric("pontuacao")}
                   className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
                     metric === "pontuacao"
-                      ? "bg-white text-brand shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "bg-white dark:bg-gray-600 text-brand shadow-sm"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700"
                   }`}
                 >
                   Pontuação
@@ -105,8 +105,8 @@ export default function Historico() {
                   onClick={() => setMetric("rank")}
                   className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
                     metric === "rank"
-                      ? "bg-white text-brand shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "bg-white dark:bg-gray-600 text-brand shadow-sm"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700"
                   }`}
                 >
                   Posição
@@ -130,10 +130,10 @@ export default function Historico() {
       )}
 
       {snapshots.length > 0 && (
-        <div className="mt-4 sm:mt-6 overflow-x-auto rounded-xl border border-gray-200 shadow-sm -mx-3 sm:mx-0">
+        <div className="mt-4 sm:mt-6 overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm -mx-3 sm:mx-0">
           <table className="min-w-[420px] w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+              <tr className="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-300 text-xs uppercase tracking-wider">
                 <th className="px-2 sm:px-4 py-2 text-left">Data</th>
                 <th className="px-2 sm:px-4 py-2 text-center">Rod.</th>
                 <th className="px-2 sm:px-4 py-2 text-left">Apostador</th>
@@ -145,12 +145,12 @@ export default function Historico() {
               {snapshots.map((s, i) => (
                 <tr
                   key={`${s.session_date}-${s.apostador}`}
-                  className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  className={i % 2 === 0 ? "bg-white dark:bg-gray-800" : "bg-gray-50 dark:bg-gray-800/50"}
                 >
-                  <td className="px-2 sm:px-4 py-2 text-gray-600 whitespace-nowrap">
+                  <td className="px-2 sm:px-4 py-2 text-gray-600 dark:text-gray-300 whitespace-nowrap">
                     {s.session_date}
                   </td>
-                  <td className="px-2 sm:px-4 py-2 text-center text-gray-600">
+                  <td className="px-2 sm:px-4 py-2 text-center text-gray-600 dark:text-gray-300">
                     {s.rodada}
                   </td>
                   <td className="px-2 sm:px-4 py-2 font-medium">{s.apostador}</td>
