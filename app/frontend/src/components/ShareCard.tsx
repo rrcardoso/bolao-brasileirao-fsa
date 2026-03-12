@@ -52,15 +52,15 @@ export default function ShareCard({ entries, updatedAt, rodada, onClose }: Props
     return (
       <div className="flex items-center gap-1 px-2 py-[3px]">
         <span
-          className="w-6 text-right shrink-0"
-          style={{ fontSize: medal ? "0.85rem" : "0.65rem", color: medal ? undefined : "rgba(255,255,255,0.6)" }}
+          className="w-5 text-right shrink-0"
+          style={{ fontSize: medal ? "0.8rem" : "0.6rem", color: medal ? undefined : "rgba(255,255,255,0.6)" }}
         >
           {medal ?? `${entry.rank}°`}
         </span>
-        <span className="flex-1 text-white text-[11px] font-medium truncate">
+        <span className="flex-1 text-white text-[10.5px] font-medium leading-tight">
           {entry.apostador}
         </span>
-        <span className="text-white text-[11px] font-bold tabular-nums">
+        <span className="text-white text-[10.5px] font-bold tabular-nums shrink-0">
           {entry.total}
         </span>
       </div>
@@ -72,7 +72,7 @@ export default function ShareCard({ entries, updatedAt, rodada, onClose }: Props
       <div className="flex flex-col items-center gap-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div
           ref={cardRef}
-          className="w-[380px] rounded-2xl overflow-hidden shadow-2xl"
+          className="w-[480px] rounded-2xl overflow-hidden shadow-2xl"
           style={{
             background: "linear-gradient(135deg, #1e3a5f 0%, #2c5aa0 50%, #1e3f73 100%)",
           }}
@@ -104,7 +104,7 @@ export default function ShareCard({ entries, updatedAt, rodada, onClose }: Props
 
           <div className="px-4 pb-3 text-center">
             <p className="text-blue-300/60 text-[9px]">
-              bolao-brasileirao.onrender.com
+              bolao-brasileirao-fsa.onrender.com
             </p>
           </div>
         </div>
